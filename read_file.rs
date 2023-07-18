@@ -15,7 +15,10 @@ fn main() {
     let filename = &args[1];
 
     // 파일 읽기
-    let text = fs::read_to_string(filename).unwrap();
+    let text = match fs::read_to_string(filename) {
+        Ok(_v) => _v,
+        Err(_e) => _e.to_string(),
+    };
 
     println!("{}", text);
 }
