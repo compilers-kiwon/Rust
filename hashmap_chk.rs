@@ -7,10 +7,9 @@ fn main() {
     map.insert("A",30);
     map.insert("B",50);
 
-    // key 가 존재하지 않는지 확인
-    if map.get("D") == None {
-        println!("D 는 존재하지 않음");
-    } else {
-        println!("D = {}", map["D"]);
+    // key 가 존재여부 확인
+    match map.get("A") {
+        None => println!("A 는 존재하지 않음"),
+        Some(_v) => println!("A = {}", map["A"]),
     }
 }
