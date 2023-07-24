@@ -1,9 +1,11 @@
 fn main() {
-    let g1 = "실수할 줄 아는 사람이 아름답다".to_string();
-    show_message(&g1);
-    println!("g1의 소유권이 유효함, {}",g1);
+    let mut msg = "건강한 신체에 건강한 정신이 깃든다.".to_string();
+    println!("{}",msg);
+    add_quote(&mut msg);
+    println!("{}",msg);
 }
 
-fn show_message(message: &String) {
-    println!("{}",message);
+fn add_quote(msg: &mut String) {
+    msg.insert(0,'"');
+    msg.push('"');
 }
