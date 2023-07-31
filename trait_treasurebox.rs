@@ -1,7 +1,11 @@
 // 보물 상자의 동작을 정의하는 트레잇
 trait TreasureBox {
-    fn open(&self, key_no: i32) -> bool;
+    // 기본 메서드
+    fn open(&self, key_no: i32) -> bool {
+        self.get_key_no() == key_no   // 지정된 열쇠로만 상자가 열림
+    }
     fn check(&self);
+    fn get_key_no(&self) -> i32;
 }
 
 // 보석이 들어 있는 상자의 구조체를 정의
@@ -11,28 +15,27 @@ struct JewelryBox {
 }
 
 impl TreasureBox for JewelryBox {
-    fn open(&self, key_no: i32) -> bool {
-        self.key_no == key_no   // 지정된 열쇠로만 상자가 열림
-    }
-
     fn check(&self) {
         println!("보석 상자였다. {} 골드 입수", self.price);
     }
+
+    fn get_key_no(&self) -> i32 {
+        self.key_no
+    }
 }
 
-// 함정 상자의 구조체 정의
-struct TrapBox {
-    damage: i32
+// 빈 상자의 구조체 정의
+struct EmptyBox {
+    key_no: i32
 }
 
-impl TreasureBox for TrapBox {
-    fn open(&self, _key_no: i32) -> bool {  // 사용하지 않는 parameter 에 대한
-                                            // warning 을 피하기 위해 '_' 접두사 사용
-        true
+impl TreasureBox for EmptyBox {
+    fn check(&self) {
+        println!("비어있는 상자이다.");
     }
 
-    fn check(&self) {
-        println!("함정이었다. HP 가 {} 감소했다.", self.damage);
+    fn get_key_no(&self) -> i32 {
+        self.key_no
     }
 }
 
@@ -52,8 +55,8 @@ fn main() {
         key_no: 1
     };
 
-    let box2 = TrapBox {
-        damage: 30
+    let box2 = EmptyBox {
+        key_no: 1
     };
 
     let box3 = JewelryBox {
@@ -62,8 +65,7 @@ fn main() {
     };
 
     // 모험가가 가진 열쇠로 상자를 연다.
-    let my_key = 2;
-    open_box(&box1, my_key);
-    open_box(&box2, my_key);
-    open_box(&box3, my_key);
+    open_box(&box1, 1);
+    open_box(&box2, 1);
+    open_box(&box3, 1);
 }
