@@ -1,23 +1,37 @@
-fn fibo(n:i64) -> i64 {
-    if n == 1 { return  0; }
-    if n == 2 { return  1; }
-    return  fibo(n-2)+fibo(n-1);
+// 피보나치 수열을 반환하는 반복자
+struct FibIterator {
+    a: usize,
+    b: usize
 }
 
-fn input(prompt: &str) -> i64 {
-    // 메세지 출력
-    println!("{}", prompt);
-    // 입력값을 가져옴
-    let mut s = String::new();
-    std::io::stdin().read_line(&mut s).expect("잘못된 입력입니다.");
-    // 공백을 제거하고 숫자 값으로 변환
-    return  s.trim().parse().expect("숫자가 아닙니다.");
+impl FibIterator {
+    fn new() -> Self { FibIterator{a: 1, b: 1} }
+}
+
+// 반복자 구현
+impl Iterator for FibIterator {
+    type Item = usize;
+    fn next(&mut self) -> Option<Self::Item> {
+        let tmp = self.a;
+        self.a = self.b;
+        self.b += tmp;
+        return  Some(self.a);
+    }
 }
 
 fn main() {
-    let n = input("1 부터 몇까지?");
+    // for 를 이용해 결과를 10개 출력
+    let fib_iter = FibIterator::new();
 
-    for i in 1..n+1 {
-        println!("fibo({}) = {}",i,fibo(i));
+    for (i, n) in fib_iter.enumerate() {
+        if i >= 10 { break; }
+        print!("{},", n);
     }
+
+    println!("");
+
+    // take 를 이용하는 경우
+    let fib_iter = FibIterator::new();
+    fib_iter.take(10).for_each(|f| print!("{},", f));
+    println!("");
 }
