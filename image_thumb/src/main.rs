@@ -1,4 +1,4 @@
-use image::{self, imageops, GenericImageView};
+use image;
 
 fn main() {
     // re-size 후의 크기 지정
@@ -18,20 +18,11 @@ fn main() {
     println!("output: {}", outfile);
 
     // 이미지 파일 읽기
-    let mut img = image::open(infile)
+    let img = image::open(infile)
                     .expect("파일을 읽을 수 없습니다.");
-    
-    // 이미지 크기 얻기
-    let dim = img.dimensions();
-
-    // 정사각형으로 자르기
-    let w = if dim.0 > dim.1 {dim.1} else {dim.0};
-    let mut img2 = imageops::crop(&mut img,
-                    (dim.0-w)/2, (dim.1-w)/2, w, w).to_image();
-    
-    // 지정한 크기로 re-size
-    let img3 = imageops::resize(&mut img2, size ,size, imageops::Lanczos3);
+    // 섬네일 만들기
+    let thumb = img.thumbnail(size, size);
 
     // 파일로 저장
-    img3.save(outfile).unwrap();
+    thumb.save(outfile).unwrap();
 }
