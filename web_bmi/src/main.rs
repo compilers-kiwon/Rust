@@ -1,4 +1,4 @@
-use actix_web::{get, web, App, Error, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{get, post, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use serde::Deserialize;
 
 // 서버 주소와 포트 지정
@@ -27,7 +27,7 @@ async fn index(_: HttpRequest) -> Result<HttpResponse, Error> {
         .content_type("text/html; charset=utf-8")
         .body(r#"
                 <html><body><h1>BMI 계산 및 비만도 판정</h1>
-                <form action='calc'>
+                <form action='calc' method='post'>
                 <div>키: <div><label><input name='height' value='160'></label></div></div>
                 <div>몸무게: <div><label><input name='weight' value='70'></label></div></div>
                 <div><label><input type='submit' value='확인'></label></div>
@@ -43,8 +43,8 @@ pub struct FormBMI {
 }
 
 // BMI 를 계산하여 결과를 표시하는 부분
-#[get("/calc")]
-async fn calc(q: web::Query<FormBMI>) -> Result<HttpResponse, Error> {
+#[post("/calc")]
+async fn calc(q: web::Form<FormBMI>) -> Result<HttpResponse, Error> {
     // 폼으로 전달받은 매개변수 확인(CLI)
     println!("{:?}", q);
     // BMI 계산
