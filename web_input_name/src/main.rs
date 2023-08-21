@@ -18,16 +18,16 @@ async fn main() -> tide::Result<()> {
         Ok(tide::Response::builder(200)
             .content_type(tide::http::mime::HTML)
             .body(r#"
-                <html><body><form action='hello'>
+                <html><body><form action='hello' method='post'>
                 name: <input name='name' value='남방큰돌고래'>
                 <input type='submit' value='전송'>
                 </form></body></html>"#)
             .build())
     });
     // "/hello"에 접속할 때의 처리
-    app.at("/hello").get(|req: tide::Request<()>| async move {
+    app.at("/hello").post(|mut req: tide::Request<()>| async move {
         // 전송받은 데이터를 구조체에 할당
-        let user: UserInfo = req.query()?;
+        let user: UserInfo = req.body_form().await?;
         Ok(tide::Response::builder(200)
             .content_type(tide::http::mime::HTML)
             .body(format!("<h1>안녕하세요, {}님</h1>", user.name))
