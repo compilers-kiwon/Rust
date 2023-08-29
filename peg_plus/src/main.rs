@@ -1,23 +1,35 @@
 // 문법 규칙 시작
 peg::parser!( grammar calc() for str {
-    // 기본이 되는 규칙 추가
-    pub rule eval() -> i64  // 규칙 이름
-        = term()            // 구문 정의
-
-    // 덧셈을 수행하는 규칙
-    rule term() -> i64          // 규칙 이름
-        = v1:num() "+" v2:num() // 구문 정의
-        { v1 + v2 }             // 동작
+    // 기본이 되는 규칙
+    pub rule eval() -> i64
+        = expr()
     
+    // 덧셈과 뺄셈용 규칙 추가
+    rule expr() -> i64
+        = l:term() "+" r:expr() { l + r }
+        / l:term() "-" r:expr() { l - r }
+        / term()
+
+    // 곱셈과 나눗셈용 규칙 추가
+    rule term() -> i64
+        = l:value() "*" r:term() { l * r }
+        / l:value() "/" r:term() { l / r }
+        / v:value()
+    
+    // 값을 읽는 규칙 추가
+    rule value() -> i64
+        = number()                  // 숫자 값
+        / "(" v:expr() ")" { v }    // (계산식)
+
     // 숫자 값을 읽는 규칙 추가
-    rule num() -> i64               // 규칙 이름
-        = value:$(['0'..='9']+)     // 구문 정의
-        { value.parse().unwrap() } // 동작
+    rule number() -> i64
+        = n:$(['0'..='9']+)
+        { n.parse().unwrap() }
 });
 
 fn main() {
-    // 덧셈 계산식 실행
-    println!("2+5={}", calc::eval("2+5").unwrap());
-    println!("8+2={}", calc::eval("8+2").unwrap());
-    println!("200+50={}", calc::eval("200+50").unwrap());
+    // 계산
+    println!("1+2*3={}", calc::eval("1+2*3").unwrap());
+    println!("(1+2)*3={}", calc::eval("(1+2)*3").unwrap());
+    println!("100/2-1={}", calc::eval("100/2-1").unwrap());
 }
